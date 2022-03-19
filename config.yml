@@ -1,0 +1,33 @@
+# identify the S3 bucket
+s3_bucket: mibrowser-data-s3
+
+# specify the AWS CLI command target
+aws_cli: /garage/wilsonte_lab/bin/aws/awscliv2/bin/aws
+
+# data_types are the supported data transfer types
+
+# for each data type:
+#     server_folder = the path to 'prefix' on the server, NOT included in the AWS object key
+#     prefix  = additional subfolders that ARE included in the AWS object key
+#     exclude = file extensions to exclude from transfers, e.g., bam or bam.bai
+#     include = file extensions to include in transfers, e.g., bgz or bgz.tbi
+#     label   = prompt for the object_folder input, for one or more objects
+
+# 'object_folder' is selected/provided by the user in the UI, e.g., a BruSeq sample name
+
+# thus, the local file path will be:
+#     <server_folder>/<prefix>/<object_folder>/[.../]file.extension
+# and the S3 bucket URI will be:
+#     s3://mibrowser-data-s3/<prefix>/<object_folder>/[.../]file.extension
+
+# 'exclude' rules are executed before 'include' rules
+# best practice is to only specify 'include' rules - all other files will not be transferred
+
+data_types:
+  BruSeq_Samples:
+    server_folder: /treehouse/wilsonte_lab/radonc_ljungman_turbo
+    prefix:        Ljungman5/samples
+    include:
+      - bgz
+      - bgz.tbi
+    label: "Sample Name(s)"
