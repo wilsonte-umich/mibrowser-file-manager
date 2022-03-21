@@ -2,14 +2,14 @@ ECHO OFF
 REM utility to transfer data files from a cluster server to the MIBrowser AWS S3 bucket
 REM this script launches an R Shiny app on the server that is accessed in a local web browser
 
-REM------------------------------------------------------------------------------------
+REM ------------------------------------------------------------------------------------
 REM user login specifications - EDIT THIS SECTION
 REM   USER is required, replace with your uniqname, or user name on the server
 REM   SSH_KEY_FILE is optional, uses password login if omitted or commented out with 'REM'
-REM------------------------------------------------------------------------------------
+REM ------------------------------------------------------------------------------------
 SET USER=uniqnname
 REM SET SSH_KEY_FILE=-i "C:/Users/xxxxx/path/to/key-file"
-REM------------------------------------------------------------------------------------
+REM ------------------------------------------------------------------------------------
 
 REM server specifications - edit this section if you need to, most people can leave as is
 SET SERVER=wilsonte-lab.mbni.org
