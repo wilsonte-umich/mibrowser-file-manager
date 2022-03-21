@@ -3,13 +3,14 @@
 Utility to transfer data files from a cluster server to the MIBrowser AWS S3 bucket 
 with proper paths and prefixes.
 
+### Batch scripts for app execution
+
+Folder **batch-scripts** has batch scripts that are called on a desktop or laptop
+to launch the app on the server and use it by port tunneling via ssh.
+
 ### S3 bucket
 
-The target bucket is:
-
-- Console:  <https://s3.console.aws.amazon.com/s3/buckets/mibrowser-data-s3>
-- File URI: <s3://mibrowser-data-s3/FILE>
-- File URL: <https://mibrowser-data-s3.s3.us-east-2.amazonaws.com/FILE>
+The target bucket is 'mibrowser-data-s3'.
 
 ### Configuration
 
@@ -23,8 +24,3 @@ aws_secret_access_key = xxx
 ```
 
 Enter types of supported data transfers in file **config.yml** - see file for details.
-
-### Batch scripts for app execution
-
-Folder **batch-scripts** has batch scripts that are called on a desktop or laptop
-to launch the app on the server and use it by port tunneling via ssh.

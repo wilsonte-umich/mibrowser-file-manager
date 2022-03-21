@@ -8,7 +8,7 @@ cliEnvVars <- paste("AWS_SHARED_CREDENTIALS_FILE", credentialsFile, sep = "=")
 # general function for interacting with the bucket
 awsS3 <- function(args){
     args <- c("s3", args)
-    message(paste(c("       ", config$aws_cli, args), collapse = " "))
+    # message(paste(c("       ", config$aws_cli, args), collapse = " "))
     result <- system2(
         config$aws_cli, 
         args = args,
@@ -42,7 +42,7 @@ awsS3 <- function(args){
 #     ))
 # }
 
-# tranfer data from server to S3 with extensive validation
+# transfer data from server to S3 with extensive validation
 pushToS3_ <- function(exclude, include, objects, fileCounts, dryrun = FALSE){
     dryrunOption <- if(dryrun) "--dryrun" else c()
     lapply(seq_along(objects), function(i){
@@ -74,7 +74,7 @@ pushToS3 <- function(dataType, objectFolders, overwrite){
     # set the file inclusions/exclusions
     exclude <- as.vector(if(!is.null(dt$exclude)){
         sapply(dt$exclude, function(ext) c("--exclude ", paste0("'*.", ext, "'")))
-    } else { # if including, must forcefully exclude everything first, or all trasnfers anyway!
+    } else { # if including, must forcefully exclude everything first, or all transfers anyway!
         if(is.null(dt$include)) character() else c("--exclude ", "'*'")
     })
     include <- as.vector(if(!is.null(dt$include)){
