@@ -125,5 +125,6 @@ pushToS3 <- function(dataType, objectFolders, overwrite){
     success <- sapply(results, function(x) x$success)
     results <- sapply(results, function(x) x$result)
     if(!all(success)) stop(paste(paste(objectFolders, results, sep = " : "), collapse = "\n\n"))
+    message("done")    
     paste(paste(objectFolders, results, sep = " : "), collapse = "\n\n")
 }

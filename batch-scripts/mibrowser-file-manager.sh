@@ -18,5 +18,5 @@ R_DIR=/garage/wilsonte_lab/bin/R/R-4.1.3/bin
 R_LOAD_COMMAND=NA
 
 # use ssh with port tunnel to run the app on the server - do not edit this section
-ssh $SSH_KEY_FILE -o "StrictHostKeyChecking no" -L $PORT:127.0.0.1:$PORT $USER@$SERVER \
+ssh -t $SSH_KEY_FILE -o "StrictHostKeyChecking no" -L $PORT:127.0.0.1:$PORT $USER@$SERVER \
 bash $TOOL_DIR/mibrowser-file-manager/remote.sh $PORT $R_DIR $R_LOAD_COMMAND

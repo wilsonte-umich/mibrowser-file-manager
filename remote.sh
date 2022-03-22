@@ -11,65 +11,55 @@ export R_LOAD_COMMAND=$3
 export TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $TOOL_DIR
 
-# check for server currently running on PORT
-PID_FILE=../mibrowser-file-manager-pid-$PORT.txt
-PID=""
-if [ -e $PID_FILE ]; then PID=`cat $PID_FILE`; fi
-EXISTS=""
-if [ "$PID" != "" ]; then EXISTS=`ps -p $PID | grep -v PID`; fi 
-
-# launch Shiny if not already running
-SEPARATOR="---------------------------------------------------------------------"
+# set helper variables
 WAIT_SECONDS=5
-if [ "$EXISTS" = "" ]; then
-    echo $SEPARATOR 
-    echo "Please wait $WAIT_SECONDS seconds for the web server to start"
+SEPARATOR="---------------------------------------------------------------------"
+INITIAL_PORT=$PORT
+MAX_PORT=$((PORT + 100))
+
+# get a PORT that we are able to use, i.e., that is not already busy
+function set_shiny_pid { # PID of the process running at $PORT, if any 
+    PID=`lsof -i :$PORT | tail -n1 | awk '{print $2}'`   
+}
+set_shiny_pid
+while [[ "$PID" != "" && $PORT -lt $MAX_PORT ]]; do
+    PORT=$((PORT + 1))
+    set_shiny_pid
+done
+
+# fail if no usable port is available
+if [ "$PID" != "" ]; then
     echo $SEPARATOR
-    if [[ "$R_LOAD_COMMAND" != "" && "$R_LOAD_COMMAND" != "NA" ]]; then 
-        $R_LOAD_COMMAND
-        R_SCRIPT=Rscript
-    else 
-        R_SCRIPT=$R_DIR/Rscript
-    fi
-    exec $R_SCRIPT app.R $PORT &
-    PID=$!
-    echo "$PID" > $PID_FILE
-    sleep $WAIT_SECONDS # give Shiny time to start up before showing further prompts   
+    echo "No ports are available between $PORT and $MAX_PORT."
+    echo "Cannot start the server."
+    echo $SEPARATOR
+    exit 1
 fi
 
-# report the PID to the user
-echo $SEPARATOR
-echo "Web server process running on remote port $PORT as PID $PID"
+# report if we had to change ports from the original request
+if [ "$PORT" != "$INITIAL_PORT" ]; then
+    echo $SEPARATOR
+    echo "NOTE: port $INITIAL_PORT was already in use."
+    echo "Switched to port $PORT."
+    echo "Be sure to use the correct port in your web browser."
+fi
 
-# report on browser usage within the command shell on user's local computer
+# provide feedback to user
 echo $SEPARATOR
-echo "Please point any web browser to:"
+echo "Please wait $WAIT_SECONDS seconds for the web server to start,"
+echo "then point any web browser to:"
 echo
 echo "http://127.0.0.1:$PORT"
 echo
+echo $SEPARATOR
 
-# prompt for exit action, with or without killing of the R web server process
-USER_ACTION=""
-while [[ "$USER_ACTION" != "1" && "$USER_ACTION" != "2" ]]; do
-    echo $SEPARATOR
-    echo "To close the remote server connection:"
-    echo
-    echo "  1 - close the connection AND stop the web server (PREFERRED)"
-    echo "  2 - close the connection, but leave the web server running (USE WITH CAUTION)"
-    echo
-    echo "Select an action (type '1' or '2' and hit Enter):"
-    read USER_ACTION
-done
-
-# kill the web server process if requested
-if [ "$USER_ACTION" = "1" ]; then
-    echo
-    echo "Killing remote MDI server process $PID running on port $PORT"
-    kill -9 $PID
-    echo "Done"
-fi 
-
-# send a final helpful message
-# note: the ssh process on client will NOT exit when this script exits since it is port forwarding still
-echo
-echo "You may now safely close this command window."
+# finally, start the R Shiny process, which blocks until a SIGINT or SIGHUP occurs
+# NB: it is important that ssh -t is used so that SIGHUP is generated when SSH connection ends
+if [[ "$R_LOAD_COMMAND" != "" && "$R_LOAD_COMMAND" != "NA" ]]; then 
+    $R_LOAD_COMMAND
+    R_SCRIPT=Rscript
+else 
+    R_SCRIPT=$R_DIR/Rscript
+fi   
+echo "$R_SCRIPT app.R $PORT"
+exec $R_SCRIPT app.R $PORT
