@@ -19,7 +19,7 @@ awsS3 <- function(args){
     if(!is.null(status) && status != 0) {
         list(
             success = FALSE,
-            result = "AWS CLI threw an error; check the R command window for details"
+            result = "AWS CLI threw an error; check the R command window or nohop.out for details"
         )
     } else {
         list(
