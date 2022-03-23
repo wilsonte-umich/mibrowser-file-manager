@@ -63,8 +63,9 @@ pushToS3 <- function(dataType, objectFolders, overwrite){
     # check the inputs
     req(dataType)
     req(objectFolders)
+    dataType      <- trimws(dataType)    
     objectFolders <- gsub(",", " ", objectFolders)
-    dataType      <- trimws(dataType)
+    objectFolders <- gsub(";", " ", objectFolders)
     objectFolders <- trimws(objectFolders)
     req(dataType)
     req(objectFolders)
