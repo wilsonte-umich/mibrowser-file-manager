@@ -113,12 +113,12 @@ pushToS3 <- function(dataType, objectFolders, overwrite){
         })
     }
 
-    # check the transfers with AWS CLI one at a time
-    message("doing dry run(s)")
-    dryRun <- pushToS3_(exclude, include, objects, fileCounts, TRUE)
-    ready  <- sapply(dryRun, function(x) x$success)
-    dryRun <- sapply(dryRun, function(x) x$result)
-    if(!all(ready)) stop(paste(paste(objectFolders, dryRun, sep = " : "), collapse = "\n\n"))
+    # # check the transfers with AWS CLI one at a time
+    # message("doing dry run(s)")
+    # dryRun <- pushToS3_(exclude, include, objects, fileCounts, TRUE)
+    # ready  <- sapply(dryRun, function(x) x$success)
+    # dryRun <- sapply(dryRun, function(x) x$result)
+    # if(!all(ready)) stop(paste(paste(objectFolders, dryRun, sep = " : "), collapse = "\n\n"))
 
     # do the transfer with AWS CLI one at a time
     message("executing the transfer(s)")
