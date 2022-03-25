@@ -49,7 +49,7 @@ pushToS3_ <- function(exclude, include, objects, fileCounts, dryrun = FALSE){
         x <- objects[[i]]
         message(paste("   ", x$objectFolder))
         if(fileCounts[i] == 0){
-            awsS3(c("cp", exclude, include, dryrunOption, "--recursive", x$serverFolder, x$s3URI))
+            awsS3(c("cp", exclude, include, dryrunOption, "--recursive", "--no-progress", x$serverFolder, x$s3URI))
         } else {
             list(
                 success = TRUE,
@@ -123,9 +123,13 @@ pushToS3 <- function(dataType, objectFolders, overwrite){
     # do the transfer with AWS CLI one at a time
     message("executing the transfer(s)")
     results <- pushToS3_(exclude, include, objects, fileCounts)
+    message("done")       
     success <- sapply(results, function(x) x$success)
-    results <- sapply(results, function(x) x$result)
-    if(!all(success)) stop(paste(paste(objectFolders, results, sep = " : "), collapse = "\n\n"))
-    message("done")    
-    paste(paste(objectFolders, results, sep = " : "), collapse = "\n\n")
+    results <- lapply(results, function(x) x$result)
+    serverFolder <- file.path(dt$server_folder, dt$prefix)
+    results <- lapply(results, function(x) gsub(serverFolder, '', x))  # simplify the display  
+    results <- lapply(results, function(x) gsub('\\.\\./', '', x))  
+    results <- paste(paste(objectFolders, sapply(results, paste, collapse = "\n"), sep = "\n"), collapse = "\n\n") # parse into lines
+    if(!all(success)) stop(results)
+    results
 }
