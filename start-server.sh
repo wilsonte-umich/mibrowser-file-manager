@@ -2,7 +2,7 @@
 # used by an admin to create a shared web server
 
 # set the working directory
-TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $TOOL_DIR
 
 # source the config

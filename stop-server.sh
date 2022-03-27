@@ -2,7 +2,7 @@
 # must be executed by the same person who ran start-server.sh
 
 # set the working directory
-TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $TOOL_DIR
 
 # source the config
